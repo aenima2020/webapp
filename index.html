@@ -147,12 +147,50 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 /* Resend email input */
 .resend-row{display:flex;gap:8px;margin-top:12px;}
 .resend-row input{flex:1;}
+/* Setup screen */
+.setup-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:16px;}
+.setup-box{width:100%;max-width:380px;}
+.setup-title{font-size:.9rem;font-weight:900;margin-bottom:4px;}
+.setup-desc{font-size:.7rem;color:var(--sub);line-height:1.6;margin-bottom:16px;font-weight:500;}
+.setup-status{font-size:.68rem;padding:10px 14px;border-radius:10px;margin-top:12px;line-height:1.5;font-weight:600;display:none;}
+.setup-status.ok{display:block;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);}
+.setup-status.err{display:block;background:rgba(255,69,96,.08);border:1px solid rgba(255,69,96,.2);color:var(--red);}
+.setup-status.loading{display:block;background:var(--card);border:1px solid var(--border);color:var(--sub);}
+.login-gear{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;background:none;border:none;color:var(--border);font-size:1.2rem;cursor:pointer;padding:8px;transition:.15s;}
+.login-gear:active{color:var(--teal);}
 </style>
 </head>
 <body>
 
+<!-- ===== SETUP SCREEN ===== -->
+<div class="screen" id="screenSetup">
+  <div class="setup-wrap">
+    <div class="login-logo">
+      <svg width="40" height="52" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="14,0 28,12 14,36 0,12" fill="#1EC8C8" opacity="0.9"/>
+        <polygon points="14,0 28,12 14,18" fill="#16A0A0"/>
+        <polygon points="0,12 14,18 14,36" fill="#0D7070"/>
+        <polygon points="14,0 0,12 14,18" fill="#2EEAEA"/>
+      </svg>
+      <div class="login-title">WAROENG</div>
+      <div class="login-sub">SETUP</div>
+    </div>
+    <div class="setup-box">
+      <div class="setup-title">🔗 URL Apps Script</div>
+      <div class="setup-desc">Paste URL Web App dari Google Apps Script kamu di sini. URL-nya seperti:<br><code style="font-size:.62rem;color:var(--teal);word-break:break-all;">https://script.google.com/macros/s/xxxxx/exec</code></div>
+      <input type="url" class="form-input" id="setupUrl" placeholder="https://script.google.com/macros/s/.../exec" style="font-size:.78rem;">
+      <div class="setup-status" id="setupStatus"></div>
+      <button class="btn-submit" id="btnTestUrl" onclick="testAndSaveUrl()" style="margin-top:14px;">
+        🔌 TES KONEKSI & SIMPAN
+        <div class="spinner"><div class="spinner-ring"></div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== LOGIN SCREEN ===== -->
-<div class="screen active" id="screenLogin">
+<div class="screen" id="screenLogin">
+  <button class="login-gear" onclick="showSetup()">⚙️</button>
   <div class="login-wrap">
     <div class="login-logo">
       <svg width="48" height="62" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -197,6 +235,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
   <div class="tab-bar">
     <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">➕ Tambah</button>
     <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">📋 Data</button>
+    <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">📧 Riwayat</button>
   </div>
 
   <!-- TAB: ADD NEW -->
@@ -254,6 +293,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
       <div class="list-empty">Memuat data...</div>
     </div>
   </div>
+
+  <!-- TAB: HISTORY -->
+  <div class="tab-content" id="tabContent2">
+    <div class="search-bar">
+      <input type="text" class="search-input" id="histSearch" placeholder="Cari email atau license key..." oninput="filterHistory()">
+    </div>
+    <div class="list-stats" id="histStats">Memuat...</div>
+    <div class="list-scroll" id="histScroll">
+      <div class="list-empty">Memuat riwayat email...</div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== DETAIL MODAL ===== -->
@@ -273,9 +323,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 
 <script>
 // ============================================================
-// CONFIG — Ganti API_URL setelah deploy Apps Script
+// CONFIG — API URL stored in localStorage
 // ============================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxl2Q198id3zdAvrkVZIQNe6QcY38OeReOV-h9fB-qaeG7ZlwM56z8kIXpz69ciRLnU/exec';
+let API_URL = localStorage.getItem('wg_api_url') || '';
 
 let _pin = '';
 let _adminPin = '';
@@ -283,23 +333,86 @@ let _allData = [];
 let _filtered = [];
 let _toastTimer = null;
 
+// ── Startup: check if API URL is configured ──
+(function(){
+  if (!API_URL) {
+    // No URL set — show setup screen
+    document.getElementById('screenSetup').classList.add('active');
+  } else {
+    document.getElementById('screenLogin').classList.add('active');
+  }
+})();
+
+// ── Setup ──
+async function testAndSaveUrl() {
+  const input = document.getElementById('setupUrl');
+  const btn = document.getElementById('btnTestUrl');
+  const status = document.getElementById('setupStatus');
+  let url = input.value.trim();
+
+  if (!url) { showSetupStatus('err', '❌ URL tidak boleh kosong'); return; }
+  if (!url.startsWith('https://script.google.com/')) {
+    showSetupStatus('err', '❌ URL harus dimulai dengan https://script.google.com/');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  showSetupStatus('loading', '⏳ Menghubungkan...');
+
+  try {
+    const r = await fetch(url + '?action=ping', { redirect: 'follow' });
+    const d = await r.json();
+    if (d.status === 'ok') {
+      localStorage.setItem('wg_api_url', url);
+      API_URL = url;
+      showSetupStatus('ok', '✅ Berhasil terhubung! ' + (d.message || ''));
+      setTimeout(() => {
+        document.getElementById('screenSetup').classList.remove('active');
+        document.getElementById('screenLogin').classList.add('active');
+      }, 1000);
+    } else {
+      showSetupStatus('err', '❌ Server merespon tapi error: ' + (d.message || 'Unknown'));
+    }
+  } catch (e) {
+    showSetupStatus('err', '❌ Gagal: ' + e.message + '\n\nPastikan:\n• URL sudah benar (cek copy-paste)\n• Apps Script sudah di-Deploy sebagai Web App\n• Access diset ke "Anyone"');
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+}
+
+function showSetupStatus(type, msg) {
+  const el = document.getElementById('setupStatus');
+  el.className = 'setup-status ' + type;
+  el.textContent = msg;
+}
+
+function showSetup() {
+  document.getElementById('screenLogin').classList.remove('active');
+  document.getElementById('screenMain').classList.remove('active');
+  document.getElementById('screenSetup').classList.add('active');
+  document.getElementById('setupUrl').value = API_URL || '';
+}
+
 // ── API Helper (handles Apps Script CORS + redirect) ──
 async function apiGet(params) {
+  if (!API_URL) throw new Error('API URL belum diset. Tap ⚙️ untuk setup.');
   const url = API_URL + '?' + new URLSearchParams(params).toString();
   const r = await fetch(url, { redirect: 'follow' });
+  if (!r.ok && r.type !== 'cors') throw new Error('HTTP ' + r.status);
   return await r.json();
 }
 
 async function apiPost(data) {
-  // Apps Script quirk: Content-Type must NOT be application/json
-  // or browser sends preflight OPTIONS which Apps Script can't handle.
-  // Using text/plain avoids preflight. Apps Script still reads e.postData.contents.
+  if (!API_URL) throw new Error('API URL belum diset. Tap ⚙️ untuk setup.');
   const r = await fetch(API_URL, {
     method: 'POST',
     redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
     body: JSON.stringify(data)
   });
+  if (!r.ok && r.type !== 'cors') throw new Error('HTTP ' + r.status);
   return await r.json();
 }
 
@@ -354,7 +467,7 @@ async function verifyPin() {
     const dots = document.querySelectorAll('#pinDots .pin-dot');
     dots.forEach(d => d.className = 'pin-dot error');
     setTimeout(() => { _pin = ''; updateDots(); }, 600);
-    toast('Gagal terhubung ke server', true);
+    toast('Error: ' + e.message, true);
   }
 }
 
@@ -372,6 +485,7 @@ function switchTab(idx) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
   document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
   if (idx === 1) refreshData();
+  if (idx === 2) refreshHistory();
 }
 
 // ── Submit ──
@@ -566,6 +680,60 @@ async function resendEmail(licensekey) {
     toast(d.message || 'Email terkirim', d.status !== 'ok');
   } catch (e) { toast('Gagal: ' + e.message, true); }
 }
+
+// ── History ──
+let _historyData = [];
+
+async function refreshHistory() {
+  try {
+    const d = await apiGet({ action: 'history', pin: _adminPin });
+    if (d.status === 'ok') {
+      _historyData = d.data || [];
+      renderHistory();
+    } else {
+      toast(d.message || 'Gagal memuat riwayat', true);
+    }
+  } catch (e) {
+    toast('Gagal: ' + e.message, true);
+  }
+}
+
+function renderHistory() {
+  const q = (document.getElementById('histSearch').value || '').toLowerCase();
+  const filtered = _historyData.filter(r =>
+    !q || (r.email || '').toLowerCase().includes(q) || (r.licensekey || '').toLowerCase().includes(q)
+  );
+
+  document.getElementById('histStats').textContent = filtered.length + ' dari ' + _historyData.length + ' email';
+
+  const wrap = document.getElementById('histScroll');
+  if (!filtered.length) {
+    wrap.innerHTML = '<div class="list-empty">Belum ada riwayat email' + (q ? ' untuk "' + q + '"' : '') + '</div>';
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(r => {
+    const ok = r.status === 'Sent';
+    const isResend = r.type === 'Resend';
+    html += `<div class="list-item" style="cursor:default;">
+      <div class="li-icon" style="background:${ok ? 'rgba(0,230,118,.1)' : 'rgba(255,69,96,.1)'};color:${ok ? 'var(--green)' : 'var(--red)'};border-color:${ok ? 'rgba(0,230,118,.2)' : 'rgba(255,69,96,.2)'};">${ok ? '✓' : '✕'}</div>
+      <div class="li-body">
+        <div class="li-key">${esc(r.email || '—')}</div>
+        <div class="li-meta">
+          <span>${esc(r.licensekey)}</span>
+          <span class="li-badge ${ok ? 'active' : 'inactive'}">${ok ? 'SENT' : 'FAILED'}</span>
+          ${isResend ? '<span class="li-badge cc">RESEND</span>' : ''}
+        </div>
+        <div style="font-size:.58rem;color:var(--sub);margin-top:2px;">${esc(String(r.timestamp))}</div>
+        ${!ok && r.detail ? '<div style="font-size:.58rem;color:var(--red);margin-top:2px;">' + esc(r.detail) + '</div>' : ''}
+      </div>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function filterHistory() { renderHistory(); }
 
 // ── Utils ──
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
