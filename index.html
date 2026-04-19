@@ -275,13 +275,33 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans
 // ============================================================
 // CONFIG — Ganti API_URL setelah deploy Apps Script
 // ============================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxl2Q198id3zdAvrkVZIQNe6QcY38OeReOV-h9fB-qaeG7ZlwM56z8kIXpz69ciRLnU/exec';
+const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
 
 let _pin = '';
 let _adminPin = '';
 let _allData = [];
 let _filtered = [];
 let _toastTimer = null;
+
+// ── API Helper (handles Apps Script CORS + redirect) ──
+async function apiGet(params) {
+  const url = API_URL + '?' + new URLSearchParams(params).toString();
+  const r = await fetch(url, { redirect: 'follow' });
+  return await r.json();
+}
+
+async function apiPost(data) {
+  // Apps Script quirk: Content-Type must NOT be application/json
+  // or browser sends preflight OPTIONS which Apps Script can't handle.
+  // Using text/plain avoids preflight. Apps Script still reads e.postData.contents.
+  const r = await fetch(API_URL, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify(data)
+  });
+  return await r.json();
+}
 
 // ── PIN Login ──
 function pinPress(n) {
@@ -314,8 +334,7 @@ function updateDots() {
 
 async function verifyPin() {
   try {
-    const r = await fetch(API_URL + '?action=list&pin=' + encodeURIComponent(_pin));
-    const d = await r.json();
+    const d = await apiGet({ action: 'list', pin: _pin });
     if (d.status === 'ok') {
       // PIN correct
       _adminPin = _pin;
@@ -370,18 +389,13 @@ async function submitOrder() {
   btn.classList.add('loading');
 
   try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        pin: _adminPin,
-        action: 'add',
-        email: email,
-        licensekey: key,
-        ccaccess: cc
-      })
+    const d = await apiPost({
+      pin: _adminPin,
+      action: 'add',
+      email: email,
+      licensekey: key,
+      ccaccess: cc
     });
-    const d = await r.json();
     if (d.status === 'ok') {
       toast(d.message, false);
       document.getElementById('fEmail').value = '';
@@ -403,8 +417,7 @@ async function submitOrder() {
 // ── Refresh ──
 async function refreshData() {
   try {
-    const r = await fetch(API_URL + '?action=list&pin=' + encodeURIComponent(_adminPin));
-    const d = await r.json();
+    const d = await apiGet({ action: 'list', pin: _adminPin });
     if (d.status === 'ok') {
       _allData = d.data || [];
       renderList();
@@ -515,12 +528,7 @@ async function saveEdit(row) {
   if (!key) { toast('License key tidak boleh kosong', true); return; }
 
   try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pin: _adminPin, action: 'edit', row: row, licensekey: key, ccaccess: cc ? 'Y' : '' })
-    });
-    const d = await r.json();
+    const d = await apiPost({ pin: _adminPin, action: 'edit', row: row, licensekey: key, ccaccess: cc ? 'Y' : '' });
     toast(d.message || 'Berhasil', d.status !== 'ok');
     closeDetail();
     refreshData();
@@ -531,12 +539,7 @@ async function deleteEntry(row, key) {
   if (!confirm('Yakin hapus data "' + key + '"?')) return;
 
   try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pin: _adminPin, action: 'delete', row: row })
-    });
-    const d = await r.json();
+    const d = await apiPost({ pin: _adminPin, action: 'delete', row: row });
     toast(d.message || 'Berhasil dihapus', d.status !== 'ok');
     closeDetail();
     refreshData();
@@ -547,12 +550,7 @@ async function clearUser(row, key) {
   if (!confirm('Clear user "' + key + '"?\n\nUUID, status, last login & PC user akan dihapus. User bisa login ulang di device baru.')) return;
 
   try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pin: _adminPin, action: 'clear', row: row })
-    });
-    const d = await r.json();
+    const d = await apiPost({ pin: _adminPin, action: 'clear', row: row });
     toast(d.message || 'User berhasil di-clear', d.status !== 'ok');
     closeDetail();
     refreshData();
@@ -564,12 +562,7 @@ async function resendEmail(licensekey) {
   if (!email || !email.includes('@')) { toast('Masukkan email yang valid', true); return; }
 
   try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pin: _adminPin, action: 'resend', email: email, licensekey: licensekey })
-    });
-    const d = await r.json();
+    const d = await apiPost({ pin: _adminPin, action: 'resend', email: email, licensekey: licensekey });
     toast(d.message || 'Email terkirim', d.status !== 'ok');
   } catch (e) { toast('Gagal: ' + e.message, true); }
 }
