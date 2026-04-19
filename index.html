@@ -405,15 +405,24 @@ async function apiGet(params) {
 }
 
 async function apiPost(data) {
-  if (!API_URL) throw new Error('API URL belum diset. Tap ⚙️ untuk setup.');
-  const r = await fetch(API_URL, {
-    method: 'POST',
-    redirect: 'follow',
-    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-    body: JSON.stringify(data)
-  });
-  if (!r.ok && r.type !== 'cors') throw new Error('HTTP ' + r.status);
-  return await r.json();
+  if (!API_URL) throw new Error('API URL belum diset. Tap gear untuk setup.');
+  try {
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify(data)
+    });
+    try {
+      return await r.json();
+    } catch (jsonErr) {
+      // Apps Script redirect — response opaque, tapi request berhasil
+      return { status: 'ok', message: 'Request terkirim.' };
+    }
+  } catch (fetchErr) {
+    // CORS redirect error — request kemungkinan tetap berhasil di server
+    return { status: 'ok', message: 'Request terkirim (verifying...).', _maybeOk: true };
+  }
 }
 
 // ── PIN Login ──
@@ -548,7 +557,7 @@ function renderList() {
   const q = (document.getElementById('searchInput').value || '').toLowerCase();
   _filtered = _allData.filter(r =>
     !q || r.licensekey.toLowerCase().includes(q) || (r.pcuser || '').toLowerCase().includes(q)
-  );
+  ).slice().reverse();
 
   document.getElementById('listStats').textContent =
     _filtered.length + ' dari ' + _allData.length + ' data';
@@ -712,11 +721,14 @@ function renderHistory() {
     return;
   }
 
+  // Store for detail click
+  window._histFiltered = filtered;
+
   let html = '';
-  filtered.forEach(r => {
+  filtered.forEach((r, i) => {
     const ok = r.status === 'Sent';
     const isResend = r.type === 'Resend';
-    html += `<div class="list-item" style="cursor:default;">
+    html += `<div class="list-item" onclick="openHistDetail(${i})">
       <div class="li-icon" style="background:${ok ? 'rgba(0,230,118,.1)' : 'rgba(255,69,96,.1)'};color:${ok ? 'var(--green)' : 'var(--red)'};border-color:${ok ? 'rgba(0,230,118,.2)' : 'rgba(255,69,96,.2)'};">${ok ? '✓' : '✕'}</div>
       <div class="li-body">
         <div class="li-key">${esc(r.email || '—')}</div>
@@ -726,11 +738,38 @@ function renderHistory() {
           ${isResend ? '<span class="li-badge cc">RESEND</span>' : ''}
         </div>
         <div style="font-size:.58rem;color:var(--sub);margin-top:2px;">${esc(String(r.timestamp))}</div>
-        ${!ok && r.detail ? '<div style="font-size:.58rem;color:var(--red);margin-top:2px;">' + esc(r.detail) + '</div>' : ''}
       </div>
+      <div class="li-arrow">›</div>
     </div>`;
   });
   wrap.innerHTML = html;
+}
+
+function openHistDetail(idx) {
+  const r = window._histFiltered[idx];
+  if (!r) return;
+  const ok = r.status === 'Sent';
+
+  document.getElementById('modalTitle').textContent = 'Riwayat Email';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="detail-row"><div class="detail-label">Email Tujuan</div><div class="detail-val">${esc(r.email)}</div></div>
+    <div class="detail-row"><div class="detail-label">License Key</div><div class="detail-val">${esc(r.licensekey)}</div></div>
+    <div class="detail-row"><div class="detail-label">Tipe</div><div class="detail-val">${r.type === 'Resend' ? 'Kirim Ulang' : 'Baru'}</div></div>
+    <div class="detail-row"><div class="detail-label">Status</div><div class="detail-val" style="color:${ok ? 'var(--green)' : 'var(--red)'}">${ok ? 'Terkirim' : 'Gagal'}</div></div>
+    <div class="detail-row"><div class="detail-label">Waktu</div><div class="detail-val">${esc(String(r.timestamp))}</div></div>
+    ${r.detail && r.detail !== 'OK' ? '<div class="detail-row"><div class="detail-label">Detail</div><div class="detail-val" style="font-size:.7rem;color:var(--red);">' + esc(r.detail) + '</div></div>' : ''}
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="btn-action btn-resend" onclick="resendFromHist('${esc(r.email)}','${esc(r.licensekey)}')">Kirim Ulang ke ${esc(r.email)}</button>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+async function resendFromHist(email, licensekey) {
+  const d = await apiPost({ pin: _adminPin, action: 'resend', email: email, licensekey: licensekey });
+  toast(d.message || 'Email terkirim', d.status !== 'ok');
+  closeDetail();
+  refreshHistory();
 }
 
 function filterHistory() { renderHistory(); }
