@@ -2,788 +2,414 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WG Admin">
-<meta name="theme-color" content="#0E0D1A">
+<meta name="theme-color" content="#0a0a12">
 <title>Waroeng Game Admin</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230E0D1A' width='100' height='100' rx='20'/><polygon points='50,10 80,35 50,90 20,35' fill='%231EC8C8' opacity='.9'/><polygon points='50,10 80,35 50,50' fill='%2316A0A0'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0E0D1A;--surface:#151424;--card:#1C1A2E;--card2:#232140;
-  --border:#2A2845;--teal:#1EC8C8;--teal-d:#169E9E;--purple:#8B5CF6;
-  --gold:#FFB800;--red:#FF4560;--green:#00E676;--text:#E8E6F2;--sub:#6E6C90;
-  --radius:14px;
-}
+:root{--bg:#0a0a12;--sf:#12111f;--card:#181730;--card2:#1f1e38;--bd:#272550;--teal:#1ec8c8;--purple:#8b5cf6;--gold:#ffb800;--red:#ff4560;--green:#00e676;--text:#e8e6f2;--sub:#6e6c90;--r:14px;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;}
-::-webkit-scrollbar{width:0;height:0;}
-
-/* ── Screens ── */
-.screen{display:none;height:100%;flex-direction:column;overflow:hidden;}
-.screen.active{display:flex;}
-
-/* ── Login ── */
-.login-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;gap:20px;}
-.login-logo{display:flex;flex-direction:column;align-items:center;gap:8px;}
-.login-logo svg{filter:drop-shadow(0 0 20px rgba(30,200,200,.4));}
-.login-title{font-size:1.3rem;font-weight:900;letter-spacing:.16em;color:var(--teal);text-shadow:0 0 20px rgba(30,200,200,.25);}
-.login-sub{font-size:.7rem;color:var(--sub);font-weight:600;letter-spacing:.08em;}
-.pin-dots{display:flex;gap:14px;margin:8px 0 4px;}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);transition:.2s;}
+::-webkit-scrollbar{width:0;}
+.scr{display:none;height:100%;flex-direction:column;overflow:hidden;}.scr.active{display:flex;}
+/* Login */
+.login-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:16px;}
+.logo-t{font-size:1.3rem;font-weight:900;letter-spacing:.16em;color:var(--teal);}
+.logo-s{font-size:.68rem;color:var(--sub);font-weight:600;letter-spacing:.08em;}
+.pin-dots{display:flex;gap:14px;margin:4px 0;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);transition:.2s;}
 .pin-dot.filled{background:var(--teal);border-color:var(--teal);box-shadow:0 0 10px rgba(30,200,200,.4);}
 .pin-dot.error{border-color:var(--red);background:var(--red);animation:shake .4s;}
-.pin-pad{display:grid;grid-template-columns:repeat(3,70px);gap:10px;margin-top:8px;}
-.pin-key{height:56px;border-radius:16px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.25rem;font-weight:700;cursor:pointer;transition:.15s;-webkit-user-select:none;user-select:none;}
-.pin-key:active{background:var(--teal);color:#000;border-color:var(--teal);transform:scale(.93);}
-.pin-key.fn{font-size:.85rem;font-weight:600;color:var(--sub);}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}50%{transform:translateX(-4px);}}
-
-/* ── Header ── */
-.app-header{padding:14px 20px;padding-top:max(14px,env(safe-area-inset-top));background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.hdr-title{font-size:.82rem;font-weight:900;letter-spacing:.1em;flex:1;}
-.hdr-btn{background:none;border:none;color:var(--sub);padding:6px;cursor:pointer;font-size:1.1rem;border-radius:10px;transition:.15s;}
-.hdr-btn:active{background:var(--card);color:var(--teal);}
-
-/* ── Tabs ── */
-.tab-bar{display:flex;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pin-pad{display:grid;grid-template-columns:repeat(3,70px);gap:10px;margin-top:4px;}
+.pin-key{height:54px;border-radius:16px;background:var(--card);border:1px solid var(--bd);color:var(--text);font-size:1.2rem;font-weight:700;cursor:pointer;transition:.15s;-webkit-user-select:none;}
+.pin-key:active{background:var(--teal);color:#000;transform:scale(.93);}
+.pin-key.fn{font-size:.8rem;color:var(--sub);}
+.gear-btn{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;background:none;border:none;color:var(--bd);font-size:1.2rem;cursor:pointer;padding:8px;}
+/* Setup */
+.setup-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:max(40px,env(safe-area-inset-top)) 24px 24px;gap:12px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.setup-box{width:100%;max-width:400px;}
+.setup-section{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+.setup-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;color:var(--sub);text-transform:uppercase;margin-bottom:8px;}
+.setup-st{font-size:.62rem;padding:8px 12px;border-radius:8px;margin-top:8px;font-weight:600;display:none;}
+.setup-st.ok{display:block;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);}
+.setup-st.err{display:block;background:rgba(255,69,96,.08);border:1px solid rgba(255,69,96,.2);color:var(--red);}
+.setup-st.wait{display:block;background:var(--card2);border:1px solid var(--bd);color:var(--sub);}
+/* Mode selector */
+.mode-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:20px;}
+.mode-card{width:100%;max-width:340px;padding:24px 20px;background:var(--card);border:1.5px solid var(--bd);border-radius:18px;cursor:pointer;transition:.2s;text-align:center;}
+.mode-card:active{border-color:var(--teal);transform:scale(.97);background:var(--card2);}
+.mode-icon{font-size:2.2rem;margin-bottom:8px;}
+.mode-title{font-size:.95rem;font-weight:900;margin-bottom:4px;}
+.mode-desc{font-size:.68rem;color:var(--sub);font-weight:500;}
+/* Header */
+.app-hdr{padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.hdr-t{font-size:.75rem;font-weight:900;letter-spacing:.08em;flex:1;}
+.hdr-mode{font-size:.55rem;font-weight:800;padding:3px 8px;border-radius:6px;background:rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2);}
+.hdr-btn{background:none;border:none;color:var(--sub);padding:6px;cursor:pointer;font-size:1rem;border-radius:10px;}
+.hdr-btn:active{color:var(--teal);}
+/* Tabs */
+.tab-bar{display:flex;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
 .tab-bar::-webkit-scrollbar{display:none;}
-.tab-btn{flex:1;min-width:0;padding:12px 8px;text-align:center;font-size:.72rem;font-weight:800;color:var(--sub);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:.15s;white-space:nowrap;letter-spacing:.03em;}
+.tab-btn{flex:1;padding:11px 4px;text-align:center;font-size:.62rem;font-weight:800;color:var(--sub);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;letter-spacing:.02em;position:relative;min-width:0;}
 .tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
-.tab-btn:active{background:rgba(30,200,200,.05);}
-
-/* ── Tab content ── */
-.tab-content{display:none;flex:1;flex-direction:column;overflow:hidden;}
-.tab-content.active{display:flex;}
-.tab-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px;padding-bottom:max(16px,env(safe-area-inset-bottom));}
-
-/* ── Form ── */
-.form-group{margin-bottom:18px;}
-.form-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;color:var(--sub);text-transform:uppercase;margin-bottom:6px;display:block;}
-.form-input{width:100%;padding:13px 16px;border-radius:12px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;outline:none;transition:.2s;-webkit-appearance:none;}
-.form-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(30,200,200,.12);}
-.form-input::placeholder{color:var(--sub);font-weight:500;}
-
+.cart-badge{position:absolute;top:2px;right:2px;background:var(--red);color:#fff;font-size:.45rem;font-weight:900;min-width:14px;height:14px;border-radius:7px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+.tab-c{display:none;flex:1;flex-direction:column;overflow:hidden;}.tab-c.active{display:flex;}
+.tab-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px;padding-bottom:max(14px,env(safe-area-inset-bottom));}
+/* Inputs */
+.inp{width:100%;padding:12px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--bd);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;outline:none;-webkit-appearance:none;}.inp:focus{border-color:var(--teal);}.inp::placeholder{color:var(--sub);}
+.search-bar{padding:10px 16px;border-bottom:1px solid var(--bd);flex-shrink:0;}
+/* Cards */
+.g-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s;}.g-card:active{border-color:var(--teal);background:var(--card2);}
+.g-name{font-size:.82rem;font-weight:800;}.g-meta{font-size:.6rem;color:var(--sub);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;}
+.badge{font-size:.5rem;font-weight:900;padding:2px 6px;border-radius:5px;letter-spacing:.04em;}
+.badge-teal{background:rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2);}
+.badge-purple{background:rgba(139,92,246,.1);color:var(--purple);border:1px solid rgba(139,92,246,.2);}
+.badge-green{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2);}
+.badge-red{background:rgba(255,69,96,.1);color:var(--red);border:1px solid rgba(255,69,96,.2);}
+.badge-gold{background:rgba(255,184,0,.1);color:var(--gold);border:1px solid rgba(255,184,0,.2);}
 /* Toggle */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;}
-.toggle-info{display:flex;flex-direction:column;gap:2px;}
-.toggle-title{font-size:.82rem;font-weight:700;}
-.toggle-desc{font-size:.65rem;color:var(--sub);font-weight:500;}
-.toggle-sw{position:relative;width:48px;height:28px;cursor:pointer;flex-shrink:0;}
-.toggle-sw input{display:none;}
-.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:14px;transition:.25s;}
-.toggle-sw input:checked~.toggle-track{background:var(--green);}
-.toggle-knob{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.25s;pointer-events:none;}
-.toggle-sw input:checked~.toggle-knob{transform:translateX(20px);}
-
-/* Submit */
-.btn-submit{width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#000;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:900;letter-spacing:.08em;border:none;cursor:pointer;transition:.2s;margin-top:6px;position:relative;overflow:hidden;}
-.btn-submit:active{transform:scale(.97);opacity:.85;}
-.btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none;}
-.btn-submit.loading{color:transparent;}
-.btn-submit .spinner{display:none;position:absolute;inset:0;align-items:center;justify-content:center;}
-.btn-submit.loading .spinner{display:flex;}
-.spinner-ring{width:22px;height:22px;border:3px solid rgba(0,0,0,.2);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ── List ── */
-.search-bar{padding:12px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.search-input{width:100%;padding:11px 14px 11px 38px;border-radius:12px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236E6C90' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;transition:.2s;-webkit-appearance:none;}
-.search-input:focus{border-color:var(--teal);}
-.search-input::placeholder{color:var(--sub);font-weight:500;}
-.list-stats{padding:8px 18px;font-size:.65rem;font-weight:700;color:var(--sub);letter-spacing:.06em;border-bottom:1px solid var(--border);flex-shrink:0;}
-.list-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:max(16px,env(safe-area-inset-bottom));}
-.list-item{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:.1s;}
-.list-item:active{background:rgba(30,200,200,.05);}
-.li-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;flex-shrink:0;background:rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2);}
-.li-icon.vip{background:rgba(139,92,246,.12);color:var(--purple);border-color:rgba(139,92,246,.25);}
-.li-body{flex:1;min-width:0;}
-.li-key{font-size:.82rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.li-meta{font-size:.62rem;color:var(--sub);font-weight:600;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
-.li-badge{font-size:.55rem;font-weight:900;padding:2px 7px;border-radius:5px;flex-shrink:0;letter-spacing:.04em;}
-.li-badge.cc{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.25);}
-.li-badge.active{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2);}
-.li-badge.inactive{background:rgba(255,69,96,.1);color:var(--red);border:1px solid rgba(255,69,96,.2);}
-.li-arrow{color:var(--border);font-size:.8rem;flex-shrink:0;}
-.list-empty{text-align:center;padding:48px 20px;color:var(--sub);font-size:.8rem;font-weight:600;}
-
-/* ── Detail Modal ── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:200;display:none;align-items:flex-end;justify-content:center;}
-.modal-bg.open{display:flex;}
-.modal-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .3s ease;}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 0;}
-.modal-header{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
-.modal-title{flex:1;font-size:.85rem;font-weight:900;letter-spacing:.05em;}
-.modal-close{background:var(--card);border:none;color:var(--sub);width:32px;height:32px;border-radius:50%;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;}
-.modal-close:active{background:var(--border);color:var(--text);}
-.modal-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 20px;padding-bottom:max(18px,env(safe-area-inset-bottom));}
-.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
-.detail-row:last-child{border-bottom:none;}
-.detail-label{font-size:.65rem;font-weight:800;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;}
-.detail-val{font-size:.82rem;font-weight:700;text-align:right;max-width:60%;word-break:break-all;}
-.modal-actions{display:flex;gap:8px;margin-top:16px;}
-.btn-action{flex:1;padding:13px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:800;cursor:pointer;border:none;transition:.15s;letter-spacing:.05em;}
-.btn-action:active{transform:scale(.96);}
-.btn-edit{background:var(--card);border:1.5px solid var(--border);color:var(--text);}
-.btn-delete{background:rgba(255,69,96,.1);border:1.5px solid rgba(255,69,96,.25);color:var(--red);}
-.btn-resend{background:rgba(30,200,200,.1);border:1.5px solid rgba(30,200,200,.2);color:var(--teal);}
-
-/* ── Toast ── */
-.toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 22px;border-radius:14px;font-size:.78rem;font-weight:800;z-index:999;opacity:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .25s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.4);}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.toast.ok{background:var(--teal);color:#000;}
-.toast.err{background:var(--red);color:#fff;}
-
-/* ── Edit form modal ── */
-.edit-field{margin-bottom:14px;}
-.edit-field label{font-size:.65rem;font-weight:800;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;display:block;}
-.edit-field input{width:100%;padding:11px 14px;border-radius:10px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;outline:none;-webkit-appearance:none;}
-.edit-field input:focus{border-color:var(--teal);}
-
-/* Resend email input */
-.resend-row{display:flex;gap:8px;margin-top:12px;}
-.resend-row input{flex:1;}
-/* Setup screen */
-.setup-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:16px;}
-.setup-box{width:100%;max-width:380px;}
-.setup-title{font-size:.9rem;font-weight:900;margin-bottom:4px;}
-.setup-desc{font-size:.7rem;color:var(--sub);line-height:1.6;margin-bottom:16px;font-weight:500;}
-.setup-status{font-size:.68rem;padding:10px 14px;border-radius:10px;margin-top:12px;line-height:1.5;font-weight:600;display:none;}
-.setup-status.ok{display:block;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);color:var(--green);}
-.setup-status.err{display:block;background:rgba(255,69,96,.08);border:1px solid rgba(255,69,96,.2);color:var(--red);}
-.setup-status.loading{display:block;background:var(--card);border:1px solid var(--border);color:var(--sub);}
-.login-gear{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;background:none;border:none;color:var(--border);font-size:1.2rem;cursor:pointer;padding:8px;transition:.15s;}
-.login-gear:active{color:var(--teal);}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border:1.5px solid var(--bd);border-radius:12px;}
+.tog-sw{position:relative;width:48px;height:28px;cursor:pointer;flex-shrink:0;}.tog-sw input{display:none;}
+.tog-track{position:absolute;inset:0;background:var(--bd);border-radius:14px;transition:.25s;}.tog-sw input:checked~.tog-track{background:var(--green);}
+.tog-knob{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.25s;pointer-events:none;}.tog-sw input:checked~.tog-knob{transform:translateX(20px);}
+/* Buttons */
+.btn{padding:13px 20px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:800;cursor:pointer;border:none;transition:.15s;letter-spacing:.05em;width:100%;}.btn:active{transform:scale(.97);}.btn:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.btn-teal{background:var(--teal);color:#000;}.btn-purple{background:var(--purple);color:#fff;}.btn-red{background:rgba(255,69,96,.12);color:var(--red);border:1px solid rgba(255,69,96,.25);}.btn-outline{background:none;border:1.5px solid var(--bd);color:var(--sub);}.btn-outline:active{border-color:var(--teal);color:var(--teal);}
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:200;display:none;align-items:flex-end;justify-content:center;}.modal-bg.open{display:flex;}
+.modal-sheet{background:var(--sf);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:su .3s ease;}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:10px auto 0;}
+.modal-hdr{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bd);}
+.modal-title{flex:1;font-size:.85rem;font-weight:900;}.modal-close{background:var(--card);border:none;color:var(--sub);width:32px;height:32px;border-radius:50%;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px;padding-bottom:max(16px,env(safe-area-inset-bottom));}
+.d-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd);font-size:.78rem;}.d-row:last-child{border-bottom:none;}
+.d-label{color:var(--sub);font-weight:700;font-size:.63rem;letter-spacing:.06em;text-transform:uppercase;}.d-val{font-weight:700;text-align:right;max-width:60%;word-break:break-word;}
+/* List items */
+.li{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;cursor:pointer;transition:.1s;}.li:active{background:rgba(30,200,200,.04);}
+.li-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;flex-shrink:0;}
+.li-body{flex:1;min-width:0;}.li-key{font-size:.8rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-meta{font-size:.58rem;color:var(--sub);font-weight:600;margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;}
+.li-arrow{color:var(--bd);font-size:.8rem;flex-shrink:0;}
+/* Cart item */
+.cart-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;}
+.cart-item .g-name{flex:1;font-size:.78rem;}.cart-rm{background:none;border:none;color:var(--red);font-size:1rem;cursor:pointer;padding:4px 8px;}
+/* Misc */
+.stats{padding:8px 16px;font-size:.6rem;font-weight:700;color:var(--sub);border-bottom:1px solid var(--bd);flex-shrink:0;}
+.empty{text-align:center;padding:40px 20px;color:var(--sub);font-size:.78rem;font-weight:600;}
+.form-group{margin-bottom:16px;}.form-label{font-size:.63rem;font-weight:800;letter-spacing:.1em;color:var(--sub);text-transform:uppercase;margin-bottom:6px;display:block;}
+.resend-row{display:flex;gap:8px;margin-top:10px;}.resend-row input{flex:1;}
+.edit-field{margin-bottom:12px;}.edit-field label{font-size:.63rem;font-weight:800;color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;display:block;}
+.edit-field input{width:100%;padding:10px 12px;border-radius:10px;background:var(--card);border:1.5px solid var(--bd);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;outline:none;-webkit-appearance:none;}.edit-field input:focus{border-color:var(--teal);}
+.toast{position:fixed;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(100px);padding:11px 20px;border-radius:14px;font-size:.74rem;font-weight:800;z-index:999;opacity:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .25s;pointer-events:none;max-width:88vw;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.4);}.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}.toast.ok{background:var(--teal);color:#000;}.toast.err{background:var(--red);color:#fff;}
+@keyframes spin{to{transform:rotate(360deg)}}.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
+.modal-actions{display:flex;gap:8px;margin-top:16px;}.btn-act{flex:1;padding:12px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:800;cursor:pointer;border:none;transition:.15s;}.btn-act:active{transform:scale(.96);}
 </style>
 </head>
 <body>
 
-<!-- ===== SETUP SCREEN ===== -->
-<div class="screen" id="screenSetup">
-  <div class="setup-wrap">
-    <div class="login-logo">
-      <svg width="40" height="52" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="14,0 28,12 14,36 0,12" fill="#1EC8C8" opacity="0.9"/>
-        <polygon points="14,0 28,12 14,18" fill="#16A0A0"/>
-        <polygon points="0,12 14,18 14,36" fill="#0D7070"/>
-        <polygon points="14,0 0,12 14,18" fill="#2EEAEA"/>
-      </svg>
-      <div class="login-title">WAROENG</div>
-      <div class="login-sub">SETUP</div>
-    </div>
-    <div class="setup-box">
-      <div class="setup-title">🔗 URL Apps Script</div>
-      <div class="setup-desc">Paste URL Web App dari Google Apps Script kamu di sini. URL-nya seperti:<br><code style="font-size:.62rem;color:var(--teal);word-break:break-all;">https://script.google.com/macros/s/xxxxx/exec</code></div>
-      <input type="url" class="form-input" id="setupUrl" placeholder="https://script.google.com/macros/s/.../exec" style="font-size:.78rem;">
-      <div class="setup-status" id="setupStatus"></div>
-      <button class="btn-submit" id="btnTestUrl" onclick="testAndSaveUrl()" style="margin-top:14px;">
-        🔌 TES KONEKSI & SIMPAN
-        <div class="spinner"><div class="spinner-ring"></div></div>
-      </button>
-    </div>
+<!-- ===== SETUP ===== -->
+<div class="scr" id="scrSetup">
+<div class="setup-wrap">
+<div class="logo-t">WAROENG GAME</div>
+<div class="logo-s">SETUP API</div>
+<div class="setup-box">
+  <div class="setup-section">
+    <div class="setup-label">The Sims 4 — API URL</div>
+    <input class="inp" id="urlSims" placeholder="https://script.google.com/.../exec" style="font-size:.72rem;">
+    <div class="setup-st" id="stSims"></div>
+    <button class="btn btn-outline" onclick="testOne('sims')" style="margin-top:8px;padding:10px;font-size:.7rem;">Tes Koneksi</button>
   </div>
+  <div class="setup-section">
+    <div class="setup-label">Game Store — API URL</div>
+    <input class="inp" id="urlStore" placeholder="https://script.google.com/.../exec" style="font-size:.72rem;">
+    <div class="setup-st" id="stStore"></div>
+    <button class="btn btn-outline" onclick="testOne('store')" style="margin-top:8px;padding:10px;font-size:.7rem;">Tes Koneksi</button>
+  </div>
+  <button class="btn btn-teal" onclick="saveSetup()" style="margin-top:4px;">SIMPAN & LANJUT</button>
+</div>
+</div>
 </div>
 
-<!-- ===== LOGIN SCREEN ===== -->
-<div class="screen" id="screenLogin">
-  <button class="login-gear" onclick="showSetup()">⚙️</button>
-  <div class="login-wrap">
-    <div class="login-logo">
-      <svg width="48" height="62" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="14,0 28,12 14,36 0,12" fill="#1EC8C8" opacity="0.9"/>
-        <polygon points="14,0 28,12 14,18" fill="#16A0A0"/>
-        <polygon points="0,12 14,18 14,36" fill="#0D7070"/>
-        <polygon points="14,0 0,12 14,18" fill="#2EEAEA"/>
-      </svg>
-      <div class="login-title">WAROENG</div>
-      <div class="login-sub">ADMIN PANEL</div>
-    </div>
-    <div class="pin-dots" id="pinDots">
-      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-    </div>
-    <div style="font-size:.68rem;color:var(--sub);font-weight:600;">Masukkan PIN Admin</div>
-    <div class="pin-pad" id="pinPad">
-      <button class="pin-key" onclick="pinPress('1')">1</button>
-      <button class="pin-key" onclick="pinPress('2')">2</button>
-      <button class="pin-key" onclick="pinPress('3')">3</button>
-      <button class="pin-key" onclick="pinPress('4')">4</button>
-      <button class="pin-key" onclick="pinPress('5')">5</button>
-      <button class="pin-key" onclick="pinPress('6')">6</button>
-      <button class="pin-key" onclick="pinPress('7')">7</button>
-      <button class="pin-key" onclick="pinPress('8')">8</button>
-      <button class="pin-key" onclick="pinPress('9')">9</button>
-      <button class="pin-key fn" onclick="pinClear()">Clear</button>
-      <button class="pin-key" onclick="pinPress('0')">0</button>
-      <button class="pin-key fn" onclick="pinDel()">⌫</button>
-    </div>
-  </div>
+<!-- ===== LOGIN (per-mode PIN) ===== -->
+<div class="scr" id="scrLogin">
+<div class="login-wrap">
+<div class="logo-t">WAROENG GAME</div>
+<div class="logo-s" id="loginModeLbl">LOGIN</div>
+<div class="pin-dots" id="pinDots"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div>
+<div style="font-size:.64rem;color:var(--sub);font-weight:600;">Masukkan 6 Digit PIN</div>
+<div class="pin-pad">
+<button class="pin-key" onclick="pp('1')">1</button><button class="pin-key" onclick="pp('2')">2</button><button class="pin-key" onclick="pp('3')">3</button>
+<button class="pin-key" onclick="pp('4')">4</button><button class="pin-key" onclick="pp('5')">5</button><button class="pin-key" onclick="pp('6')">6</button>
+<button class="pin-key" onclick="pp('7')">7</button><button class="pin-key" onclick="pp('8')">8</button><button class="pin-key" onclick="pp('9')">9</button>
+<button class="pin-key fn" onclick="_pin='';updDots()">CLR</button><button class="pin-key" onclick="pp('0')">0</button><button class="pin-key fn" onclick="_pin=_pin.slice(0,-1);updDots()">DEL</button>
+</div>
+<button style="margin-top:14px;background:none;border:none;color:var(--sub);font-family:'DM Sans',sans-serif;font-size:.66rem;cursor:pointer;" onclick="show('scrMode')">Kembali</button>
+</div>
 </div>
 
-<!-- ===== MAIN SCREEN ===== -->
-<div class="screen" id="screenMain">
-  <div class="app-header">
-    <svg width="20" height="26" viewBox="0 0 28 36" fill="none"><polygon points="14,0 28,12 14,36 0,12" fill="#1EC8C8" opacity=".9"/><polygon points="14,0 28,12 14,18" fill="#16A0A0"/><polygon points="0,12 14,18 14,36" fill="#0D7070"/></svg>
-    <div class="hdr-title">WAROENG ADMIN</div>
-    <button class="hdr-btn" onclick="refreshData()">↻</button>
-    <button class="hdr-btn" onclick="doLogout()">⏻</button>
-  </div>
-
-  <div class="tab-bar">
-    <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">➕ Tambah</button>
-    <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">📋 Data</button>
-    <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">📧 Riwayat</button>
-  </div>
-
-  <!-- TAB: ADD NEW -->
-  <div class="tab-content active" id="tabContent0">
-    <div class="tab-scroll">
-      <div style="font-size:.65rem;font-weight:800;letter-spacing:.12em;color:var(--sub);margin-bottom:16px;">TAMBAH PEMBELI BARU</div>
-
-      <div class="form-group">
-        <label class="form-label">Email Pembeli</label>
-        <input type="email" class="form-input" id="fEmail" placeholder="email@pembeli.com" autocomplete="email" inputmode="email">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">License Key / No. Pesanan</label>
-        <input type="text" class="form-input" id="fKey" placeholder="Masukkan nomor pesanan" autocomplete="off">
-      </div>
-
-      <div class="form-group">
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <div class="toggle-title">CC Access</div>
-            <div class="toggle-desc">Beri akses Custom Content (VIP)</div>
-          </div>
-          <label class="toggle-sw">
-            <input type="checkbox" id="fCC">
-            <div class="toggle-track"></div>
-            <div class="toggle-knob"></div>
-          </label>
-        </div>
-      </div>
-
-      <button class="btn-submit" id="btnSubmit" onclick="submitOrder()">
-        KIRIM & SIMPAN
-        <div class="spinner"><div class="spinner-ring"></div></div>
-      </button>
-
-      <div style="margin-top:18px;padding:14px 16px;background:rgba(30,200,200,.04);border:1px solid rgba(30,200,200,.12);border-radius:12px;">
-        <div style="font-size:.68rem;color:var(--sub);line-height:1.7;font-weight:500;">
-          <b style="color:var(--teal);">Apa yang terjadi:</b><br>
-          ① Data masuk ke Google Sheet<br>
-          ② Email otomatis terkirim ke pembeli<br>
-          ③ Berisi link GDrive + detail pesanan
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: LIST -->
-  <div class="tab-content" id="tabContent1">
-    <div class="search-bar">
-      <input type="text" class="search-input" id="searchInput" placeholder="Cari license key..." oninput="filterList()">
-    </div>
-    <div class="list-stats" id="listStats">Memuat...</div>
-    <div class="list-scroll" id="listScroll">
-      <div class="list-empty">Memuat data...</div>
-    </div>
-  </div>
-
-  <!-- TAB: HISTORY -->
-  <div class="tab-content" id="tabContent2">
-    <div class="search-bar">
-      <input type="text" class="search-input" id="histSearch" placeholder="Cari email atau license key..." oninput="filterHistory()">
-    </div>
-    <div class="list-stats" id="histStats">Memuat...</div>
-    <div class="list-scroll" id="histScroll">
-      <div class="list-empty">Memuat riwayat email...</div>
-    </div>
-  </div>
+<!-- ===== MODE SELECTOR ===== -->
+<div class="scr" id="scrMode">
+<button class="gear-btn" onclick="showSetup()">⚙</button>
+<div class="mode-wrap">
+<div class="logo-t" style="font-size:1rem;">PILIH MODE</div>
+<div class="mode-card" onclick="enterMode('sims')">
+  <div class="mode-icon">🏠</div>
+  <div class="mode-title">The Sims 4</div>
+  <div class="mode-desc">Input license key, kirim email, kelola data pembeli</div>
+</div>
+<div class="mode-card" onclick="enterMode('store')">
+  <div class="mode-icon">🎮</div>
+  <div class="mode-title">Game Store</div>
+  <div class="mode-desc">Katalog game, keranjang, share GDrive, cabut akses</div>
+</div>
+<button style="margin-top:10px;background:none;border:none;color:var(--sub);font-family:'DM Sans',sans-serif;font-size:.68rem;cursor:pointer;" onclick="logout()">Logout</button>
+</div>
 </div>
 
-<!-- ===== DETAIL MODAL ===== -->
-<div class="modal-bg" id="detailModal" onclick="if(event.target===this)closeDetail()">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Detail</div>
-      <button class="modal-close" onclick="closeDetail()">✕</button>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
+<!-- ===== SIMS MODE ===== -->
+<div class="scr" id="scrSims">
+<div class="app-hdr">
+<div class="hdr-t" onclick="enterMode('store')" style="cursor:pointer;">THE SIMS 4 <span style="font-size:.48rem;color:var(--sub);vertical-align:middle;">▸ switch</span></div>
+<span class="hdr-mode" onclick="enterMode('store')" style="cursor:pointer;">Game Store ›</span>
+<button class="hdr-btn" onclick="sRefresh()">↻</button>
+</div>
+<div class="tab-bar" id="sTabBar">
+<button class="tab-btn active" onclick="sTab(0)">➕ Tambah</button>
+<button class="tab-btn" onclick="sTab(1)">📋 Data</button>
+<button class="tab-btn" onclick="sTab(2)">📧 Riwayat</button>
+</div>
+<!-- Tambah -->
+<div class="tab-c active" id="sT0"><div class="tab-scroll">
+<div class="form-label" style="margin-bottom:14px;">TAMBAH PEMBELI BARU</div>
+<div class="form-group"><label class="form-label">Email Pembeli</label><input class="inp" id="sEmail" placeholder="email@pembeli.com" type="email"></div>
+<div class="form-group"><label class="form-label">License Key / No. Pesanan</label><input class="inp" id="sKey" placeholder="Nomor pesanan"></div>
+<div class="form-group"><div class="tog-row"><div><div style="font-size:.82rem;font-weight:700;">CC Access</div><div style="font-size:.62rem;color:var(--sub);">Beri akses Custom Content (VIP)</div></div><label class="tog-sw"><input type="checkbox" id="sCC"><div class="tog-track"></div><div class="tog-knob"></div></label></div></div>
+<button class="btn btn-teal" id="sBtnSend" onclick="sSubmit()">KIRIM & SIMPAN</button>
+</div></div>
+<!-- Data -->
+<div class="tab-c" id="sT1">
+<div class="search-bar"><input class="inp" id="sSearch" placeholder="Cari license key..." oninput="sRenderList()" onkeyup="sRenderList()" style="font-size:.78rem;"></div>
+<div class="stats" id="sStats">Memuat...</div>
+<div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:max(14px,env(safe-area-inset-bottom));" id="sList"><div class="empty">Memuat...</div></div>
+</div>
+<!-- Riwayat -->
+<div class="tab-c" id="sT2">
+<div class="search-bar"><input class="inp" id="sHistSearch" placeholder="Cari email..." oninput="sRenderHist()" onkeyup="sRenderHist()" style="font-size:.78rem;"></div>
+<div class="stats" id="sHistStats">Memuat...</div>
+<div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:max(14px,env(safe-area-inset-bottom));" id="sHistList"><div class="empty">Memuat...</div></div>
+</div>
 </div>
 
-<!-- ===== TOAST ===== -->
+<!-- ===== STORE MODE ===== -->
+<div class="scr" id="scrStore">
+<div class="app-hdr">
+<div class="hdr-t" onclick="enterMode('sims')" style="cursor:pointer;">GAME STORE <span style="font-size:.48rem;color:var(--sub);vertical-align:middle;">▸ switch</span></div>
+<span class="hdr-mode" onclick="enterMode('sims')" style="cursor:pointer;">Sims 4 ›</span>
+<button class="hdr-btn" onclick="gRefresh()">↻</button>
+</div>
+<div class="tab-bar" id="gTabBar">
+<button class="tab-btn active" onclick="gTab(0)">🎮 Store</button>
+<button class="tab-btn" onclick="gTab(1)" style="position:relative;">🛒 Cart <span class="cart-badge" id="gCartBadge">0</span></button>
+<button class="tab-btn" onclick="gTab(2)">📋 History</button>
+<button class="tab-btn" onclick="gTab(3)">⛔ Revoke</button>
+</div>
+<!-- Store -->
+<div class="tab-c active" id="gT0">
+<div class="search-bar"><input class="inp" id="gSearch" placeholder="Cari game..." oninput="gRenderGames()" style="font-size:.78rem;"></div>
+<div class="stats" id="gStats">Memuat...</div>
+<div class="tab-scroll" id="gGameList"><div class="empty">Memuat katalog...</div></div>
+</div>
+<!-- Cart -->
+<div class="tab-c" id="gT1"><div class="tab-scroll">
+<div class="form-label" style="margin-bottom:10px;">KERANJANG</div>
+<div id="gCartList"><div class="empty">Keranjang kosong</div></div>
+<div style="margin-top:14px;"><div class="form-label">EMAIL PEMBELI</div><input class="inp" id="gSendEmail" placeholder="email@pembeli.com" type="email"></div>
+<button class="btn btn-teal" id="gBtnSend" onclick="gDoSend()" style="margin-top:12px;" disabled>KIRIM & SHARE</button>
+<div id="gSendReport" style="display:none;margin-top:14px;"></div>
+</div></div>
+<!-- History -->
+<div class="tab-c" id="gT2">
+<div class="search-bar"><input class="inp" id="gHistSearch" placeholder="Cari email / game..." oninput="gRenderHist()" style="font-size:.78rem;"></div>
+<div class="stats" id="gHistStats">Memuat...</div>
+<div class="tab-scroll" id="gHistList"><div class="empty">Memuat...</div></div>
+</div>
+<!-- Revoke -->
+<div class="tab-c" id="gT3"><div class="tab-scroll">
+<div class="form-label" style="margin-bottom:10px;">CABUT AKSES USER</div>
+<input class="inp" id="gRevokeEmail" placeholder="email@user.com" type="email">
+<button class="btn btn-outline" onclick="gRevokeScan()" style="margin-top:10px;">SCAN AKSES</button>
+<div id="gRevokeRes" style="margin-top:14px;"></div>
+</div></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="modal-sheet"><div class="modal-handle"></div>
+<div class="modal-hdr"><div class="modal-title" id="mTitle">Detail</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+<div class="modal-body" id="mBody"></div>
+</div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
-// CONFIG — API URL stored in localStorage
+// STATE — dual backend, per-mode PIN cache
 // ============================================================
-let API_URL = localStorage.getItem('wg_api_url') || '';
+let SIMS_API = localStorage.getItem('wg_sims_api') || '';
+let STORE_API = localStorage.getItem('wg_store_api') || '';
+let _pin='',_mode='',_pendingMode='',_tt=null;
+let _simsPin = localStorage.getItem('wg_sims_pin') || '';
+let _storePin = localStorage.getItem('wg_store_pin') || '';
+let _sData=[],_sFiltered=[],_sHist=[];
+let _gGames=[],_gCart=[],_gHist=[],_gRvData=[];
 
-let _pin = '';
-let _adminPin = '';
-let _allData = [];
-let _filtered = [];
-let _toastTimer = null;
-
-// ── Startup: check if API URL is configured ──
 (function(){
-  if (!API_URL) {
-    // No URL set — show setup screen
-    document.getElementById('screenSetup').classList.add('active');
-  } else {
-    document.getElementById('screenLogin').classList.add('active');
-  }
+  if(!SIMS_API && !STORE_API) show('scrSetup');
+  else show('scrMode');
 })();
 
-// ── Setup ──
-async function testAndSaveUrl() {
-  const input = document.getElementById('setupUrl');
-  const btn = document.getElementById('btnTestUrl');
-  const status = document.getElementById('setupStatus');
-  let url = input.value.trim();
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function toast(m,e){const t=document.getElementById('toast');clearTimeout(_tt);t.textContent=m;t.className='toast show '+(e?'err':'ok');_tt=setTimeout(()=>t.classList.remove('show'),3000)}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
 
-  if (!url) { showSetupStatus('err', '❌ URL tidak boleh kosong'); return; }
-  if (!url.startsWith('https://script.google.com/')) {
-    showSetupStatus('err', '❌ URL harus dimulai dengan https://script.google.com/');
-    return;
-  }
+async function apiGet(url,p){const r=await fetch(url+'?'+new URLSearchParams(p),{redirect:'follow'});try{return await r.json()}catch(e){return{status:'ok'}}}
+async function apiPost(url,d){try{const r=await fetch(url,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(d)});try{return await r.json()}catch(e){return{status:'ok',message:'OK'}}}catch(e){return{status:'ok',message:'OK'}}}
 
-  btn.disabled = true;
-  btn.classList.add('loading');
-  showSetupStatus('loading', '⏳ Menghubungkan...');
+// ── SETUP ──
+async function testOne(which){
+  const inp=document.getElementById(which==='sims'?'urlSims':'urlStore');
+  const st=document.getElementById(which==='sims'?'stSims':'stStore');
+  const u=inp.value.trim();
+  if(!u){st.className='setup-st err';st.textContent='URL kosong';return}
+  st.className='setup-st wait';st.textContent='Testing...';
+  try{const r=await fetch(u+'?action=ping',{redirect:'follow'});const d=await r.json();
+  if(d.status==='ok'){st.className='setup-st ok';st.textContent='Terhubung!'}else{st.className='setup-st err';st.textContent=d.message||'Error'}}
+  catch(e){st.className='setup-st err';st.textContent=e.message}}
 
-  try {
-    const r = await fetch(url + '?action=ping', { redirect: 'follow' });
-    const d = await r.json();
-    if (d.status === 'ok') {
-      localStorage.setItem('wg_api_url', url);
-      API_URL = url;
-      showSetupStatus('ok', '✅ Berhasil terhubung! ' + (d.message || ''));
-      setTimeout(() => {
-        document.getElementById('screenSetup').classList.remove('active');
-        document.getElementById('screenLogin').classList.add('active');
-      }, 1000);
-    } else {
-      showSetupStatus('err', '❌ Server merespon tapi error: ' + (d.message || 'Unknown'));
-    }
-  } catch (e) {
-    showSetupStatus('err', '❌ Gagal: ' + e.message + '\n\nPastikan:\n• URL sudah benar (cek copy-paste)\n• Apps Script sudah di-Deploy sebagai Web App\n• Access diset ke "Anyone"');
-  }
+function saveSetup(){
+  const s=document.getElementById('urlSims').value.trim();
+  const g=document.getElementById('urlStore').value.trim();
+  if(!s&&!g){toast('Isi minimal satu URL',1);return}
+  if(s){localStorage.setItem('wg_sims_api',s);SIMS_API=s}
+  if(g){localStorage.setItem('wg_store_api',g);STORE_API=g}
+  toast('Tersimpan!',0);setTimeout(()=>show('scrMode'),500)}
 
-  btn.disabled = false;
-  btn.classList.remove('loading');
-}
+function showSetup(){document.getElementById('urlSims').value=SIMS_API;document.getElementById('urlStore').value=STORE_API;show('scrSetup')}
 
-function showSetupStatus(type, msg) {
-  const el = document.getElementById('setupStatus');
-  el.className = 'setup-status ' + type;
-  el.textContent = msg;
-}
+// ── MODE + PER-MODE PIN ──
+function enterMode(m){
+  if(!m){show('scrMode');return}
+  _pendingMode=m;
+  var api=m==='sims'?SIMS_API:STORE_API;
+  if(!api){toast('URL '+(m==='sims'?'Sims':'Store')+' belum diset. Tap gear.',1);return}
+  var cached=m==='sims'?_simsPin:_storePin;
+  if(cached){_mode=m;if(m==='sims'){show('scrSims');sTab(0);sRefresh()}else{show('scrStore');gTab(0);gRefresh()}return}
+  _pin='';updDots();
+  document.getElementById('loginModeLbl').textContent=m==='sims'?'PIN — THE SIMS 4':'PIN — GAME STORE';
+  show('scrLogin')}
 
-function showSetup() {
-  document.getElementById('screenLogin').classList.remove('active');
-  document.getElementById('screenMain').classList.remove('active');
-  document.getElementById('screenSetup').classList.add('active');
-  document.getElementById('setupUrl').value = API_URL || '';
-}
+function pp(n){if(_pin.length>=6)return;_pin+=n;updDots();if(_pin.length===6)verifyPin()}
+function updDots(){document.querySelectorAll('#pinDots .pin-dot').forEach((d,i)=>d.className='pin-dot'+(i<_pin.length?' filled':''))}
 
-// ── API Helper (handles Apps Script CORS + redirect) ──
-async function apiGet(params) {
-  if (!API_URL) throw new Error('API URL belum diset. Tap ⚙️ untuk setup.');
-  const url = API_URL + '?' + new URLSearchParams(params).toString();
-  const r = await fetch(url, { redirect: 'follow' });
-  if (!r.ok && r.type !== 'cors') throw new Error('HTTP ' + r.status);
-  return await r.json();
-}
+async function verifyPin(){
+  var m=_pendingMode;var api=m==='sims'?SIMS_API:STORE_API;var act=m==='sims'?'list':'games';
+  try{const d=await apiGet(api,{action:act,pin:_pin});
+  if(d.status==='ok'){
+    if(m==='sims'){_simsPin=_pin;localStorage.setItem('wg_sims_pin',_pin);_sData=d.data||[]}
+    else{_storePin=_pin;localStorage.setItem('wg_store_pin',_pin);_gGames=d.data||[]}
+    _mode=m;
+    if(m==='sims'){show('scrSims');sTab(0);sRenderList();toast('Sims ready!',0)}
+    else{show('scrStore');gTab(0);gRenderGames();toast('Store ready!',0)}
+  }else{pinErr('PIN salah!')}}catch(e){pinErr(e.message)}}
 
-async function apiPost(data) {
-  if (!API_URL) throw new Error('API URL belum diset. Tap gear untuk setup.');
-  try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-      body: JSON.stringify(data)
-    });
-    try {
-      return await r.json();
-    } catch (jsonErr) {
-      // Apps Script redirect — response opaque, tapi request berhasil
-      return { status: 'ok', message: 'Request terkirim.' };
-    }
-  } catch (fetchErr) {
-    // CORS redirect error — request kemungkinan tetap berhasil di server
-    return { status: 'ok', message: 'Request terkirim (verifying...).', _maybeOk: true };
-  }
-}
+function pinErr(m){document.querySelectorAll('#pinDots .pin-dot').forEach(d=>d.className='pin-dot error');setTimeout(()=>{_pin='';updDots()},600);toast(m,1)}
 
-// ── PIN Login ──
-function pinPress(n) {
-  if (_pin.length >= 4) return;
-  _pin += n;
-  updateDots();
-  if (_pin.length === 4) {
-    _adminPin = _pin;
-    // Verify PIN by pinging API
-    verifyPin();
-  }
-}
+function logout(){
+  if(_mode==='sims'){_simsPin='';localStorage.removeItem('wg_sims_pin')}
+  else if(_mode==='store'){_storePin='';localStorage.removeItem('wg_store_pin')}
+  _mode='';show('scrMode')}
 
-function pinDel() {
-  _pin = _pin.slice(0, -1);
-  updateDots();
-}
+// ── SIMS MODE (uses SIMS_API + _simsPin, original action names) ──
+function sTab(i){document.querySelectorAll('#sTabBar .tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+for(let j=0;j<3;j++){const c=document.getElementById('sT'+j);c&&c.classList.toggle('active',j===i)}
+if(i===1){if(!_sData.length)sRefresh();else sRenderList()}
+if(i===2){if(!_sHist.length)sRefreshHist();else sRenderHist()}}
 
-function pinClear() {
-  _pin = '';
-  updateDots();
-}
+async function sRefresh(){if(!SIMS_API||!_simsPin)return;try{const d=await apiGet(SIMS_API,{action:'list',pin:_simsPin});if(d.status==='ok'){_sData=d.data||[];sRenderList()}}catch(e){}}
+async function sRefreshHist(){if(!SIMS_API||!_simsPin)return;try{const d=await apiGet(SIMS_API,{action:'history',pin:_simsPin});if(d.status==='ok'){_sHist=d.data||[];sRenderHist()}}catch(e){}}
 
-function updateDots() {
-  const dots = document.querySelectorAll('#pinDots .pin-dot');
-  dots.forEach((d, i) => {
-    d.className = 'pin-dot' + (i < _pin.length ? ' filled' : '');
-  });
-}
+async function sSubmit(){
+  const email=document.getElementById('sEmail').value.trim(),key=document.getElementById('sKey').value.trim(),cc=document.getElementById('sCC').checked;
+  if(!email||!email.includes('@')){toast('Email tidak valid',1);return}
+  if(!key){toast('Key wajib',1);return}
+  const btn=document.getElementById('sBtnSend');btn.disabled=true;
+  try{const d=await apiPost(SIMS_API,{pin:_simsPin,action:'add',email,licensekey:key,ccaccess:cc});
+  toast(d.message||'OK',d.status!=='ok');
+  if(d.status==='ok'){document.getElementById('sEmail').value='';document.getElementById('sKey').value='';document.getElementById('sCC').checked=false;sRefresh()}}
+  catch(e){toast(e.message,1)}btn.disabled=false}
 
-async function verifyPin() {
-  try {
-    const d = await apiGet({ action: 'list', pin: _pin });
-    if (d.status === 'ok') {
-      // PIN correct
-      _adminPin = _pin;
-      document.getElementById('screenLogin').classList.remove('active');
-      document.getElementById('screenMain').classList.add('active');
-      _allData = d.data || [];
-      renderList();
-      toast('Selamat datang, Admin!', false);
-    } else {
-      // Wrong PIN
-      const dots = document.querySelectorAll('#pinDots .pin-dot');
-      dots.forEach(d => d.className = 'pin-dot error');
-      setTimeout(() => { _pin = ''; updateDots(); }, 600);
-      toast('PIN salah!', true);
-    }
-  } catch (e) {
-    const dots = document.querySelectorAll('#pinDots .pin-dot');
-    dots.forEach(d => d.className = 'pin-dot error');
-    setTimeout(() => { _pin = ''; updateDots(); }, 600);
-    toast('Error: ' + e.message, true);
-  }
-}
+function sRenderList(){
+  const q=(document.getElementById('sSearch').value||'').toLowerCase();
+  _sFiltered=_sData.filter(r=>!q||r.licensekey.toLowerCase().includes(q)||(r.pcuser||'').toLowerCase().includes(q)).slice().reverse();
+  document.getElementById('sStats').textContent=_sFiltered.length+' dari '+_sData.length;
+  const w=document.getElementById('sList');if(!_sFiltered.length){w.innerHTML='<div class="empty">Tidak ada data</div>';return}
+  w.innerHTML=_sFiltered.map((r,i)=>{const cc=r.ccaccess==='Y',act=r.uuid||r.status;
+  return'<div class="li" onclick="sDetail('+i+')" style="cursor:pointer;"><div class="li-icon" style="background:'+(cc?'rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.25)':'rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2)')+';">'+(cc?'VIP':'STD')+'</div><div class="li-body"><div class="li-key">'+esc(r.licensekey||'-')+'</div><div class="li-meta">'+(r.pcuser?'<span>'+esc(r.pcuser)+'</span>':'')+(cc?'<span class="badge badge-purple">CC</span>':'')+(act?'<span class="badge badge-green">AKTIF</span>':'<span class="badge badge-red">BELUM</span>')+'</div></div><div class="li-arrow">&rsaquo;</div></div>'}).join('')}
 
-function doLogout() {
-  _pin = '';
-  _adminPin = '';
-  _allData = [];
-  updateDots();
-  document.getElementById('screenMain').classList.remove('active');
-  document.getElementById('screenLogin').classList.add('active');
-}
+function sDetail(i){const r=_sFiltered[i];if(!r)return;
+  document.getElementById('mTitle').textContent=r.licensekey||'Detail';
+  document.getElementById('mBody').innerHTML='<div class="d-row"><div class="d-label">License Key</div><div class="d-val">'+esc(r.licensekey)+'</div></div><div class="d-row"><div class="d-label">UUID</div><div class="d-val" style="font-size:.68rem;">'+esc(r.uuid||'-')+'</div></div><div class="d-row"><div class="d-label">Status</div><div class="d-val">'+esc(r.status||'-')+'</div></div><div class="d-row"><div class="d-label">Last Login</div><div class="d-val">'+esc(String(r.lastlogin||'-'))+'</div></div><div class="d-row"><div class="d-label">PC User</div><div class="d-val">'+esc(r.pcuser||'-')+'</div></div><div class="d-row"><div class="d-label">CC Access</div><div class="d-val">'+(r.ccaccess==='Y'?'<span style="color:var(--green)">VIP</span>':'-')+'</div></div><div style="margin-top:16px;"><div class="form-label">EDIT</div><div class="edit-field"><label>License Key</label><input id="seKey" value="'+esc(r.licensekey)+'"></div><div class="tog-row" style="margin-bottom:12px;"><div style="font-size:.8rem;font-weight:700;">CC Access</div><label class="tog-sw"><input type="checkbox" id="seCC" '+(r.ccaccess==='Y'?'checked':'')+'><div class="tog-track"></div><div class="tog-knob"></div></label></div></div><div style="margin-top:8px;"><div class="form-label">KIRIM ULANG EMAIL</div><div class="resend-row"><input class="inp" id="seResend" placeholder="email" style="font-size:.78rem;padding:10px 12px;"><button class="btn-act" style="flex:0;padding:10px 14px;background:rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2);white-space:nowrap;" onclick="sResend(\''+esc(r.licensekey)+'\')">Kirim</button></div></div><div class="modal-actions"><button class="btn-act" style="background:var(--card);border:1.5px solid var(--bd);color:var(--text);" onclick="sSave('+r.row+')">Simpan</button><button class="btn-act" style="background:rgba(255,184,0,.1);border:1.5px solid rgba(255,184,0,.22);color:var(--gold);" onclick="sClear('+r.row+',\''+esc(r.licensekey)+'\')">Clear</button><button class="btn-act" style="background:rgba(255,69,96,.1);border:1.5px solid rgba(255,69,96,.25);color:var(--red);" onclick="sDel('+r.row+',\''+esc(r.licensekey)+'\')">Hapus</button></div>';
+  document.getElementById('modal').classList.add('open')}
 
-// ── Tabs ──
-function switchTab(idx) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
-  document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
-  if (idx === 1) refreshData();
-  if (idx === 2) refreshHistory();
-}
+async function sSave(row){const k=document.getElementById('seKey').value.trim(),cc=document.getElementById('seCC').checked;if(!k){toast('Key kosong',1);return}const d=await apiPost(SIMS_API,{pin:_simsPin,action:'edit',row,licensekey:k,ccaccess:cc?'Y':''});toast(d.message||'OK',d.status!=='ok');closeModal();sRefresh()}
+async function sClear(row,key){if(!confirm('Clear user '+key+'?'))return;const d=await apiPost(SIMS_API,{pin:_simsPin,action:'clear',row});toast(d.message||'OK',d.status!=='ok');closeModal();sRefresh()}
+async function sDel(row,key){if(!confirm('Hapus '+key+'?'))return;const d=await apiPost(SIMS_API,{pin:_simsPin,action:'delete',row});toast(d.message||'OK',d.status!=='ok');closeModal();sRefresh()}
+async function sResend(key){const e=document.getElementById('seResend').value.trim();if(!e||!e.includes('@')){toast('Email tidak valid',1);return}const d=await apiPost(SIMS_API,{pin:_simsPin,action:'resend',email:e,licensekey:key});toast(d.message||'OK',d.status!=='ok')}
 
-// ── Submit ──
-async function submitOrder() {
-  const email = document.getElementById('fEmail').value.trim();
-  const key = document.getElementById('fKey').value.trim();
-  const cc = document.getElementById('fCC').checked;
-  const btn = document.getElementById('btnSubmit');
+function sRenderHist(){const q=(document.getElementById('sHistSearch').value||'').toLowerCase();
+const f=_sHist.filter(r=>!q||(r.email||'').toLowerCase().includes(q)||(r.licensekey||'').toLowerCase().includes(q));
+window._sHistFiltered=f;
+document.getElementById('sHistStats').textContent=f.length+' dari '+_sHist.length;const w=document.getElementById('sHistList');
+if(!f.length){w.innerHTML='<div class="empty">Kosong</div>';return}
+w.innerHTML=f.map((r,i)=>{const ok=r.status==='Sent';return'<div class="li" onclick="sHistDetail('+i+')" style="cursor:pointer;"><div class="li-icon" style="background:'+(ok?'rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2)':'rgba(255,69,96,.1);color:var(--red);border:1px solid rgba(255,69,96,.2)')+';">'+(ok?'OK':'!')+'</div><div class="li-body"><div class="li-key">'+esc(r.email)+'</div><div class="li-meta"><span>'+esc(r.licensekey)+'</span><span class="badge '+(ok?'badge-green':'badge-red')+'">'+(ok?'SENT':'FAIL')+'</span>'+(r.type==='Resend'?'<span class="badge badge-purple">RESEND</span>':'')+'</div><div style="font-size:.52rem;color:var(--sub);margin-top:2px;">'+esc(String(r.timestamp))+'</div></div><div class="li-arrow">&rsaquo;</div></div>'}).join('')}
 
-  if (!email) { toast('Email wajib diisi!', true); return; }
-  if (!key) { toast('License key wajib diisi!', true); return; }
-  if (!email.includes('@')) { toast('Format email tidak valid!', true); return; }
+function sHistDetail(i){const r=window._sHistFiltered[i];if(!r)return;const ok=r.status==='Sent';
+document.getElementById('mTitle').textContent='Riwayat Email';
+document.getElementById('mBody').innerHTML='<div class="d-row"><div class="d-label">Email</div><div class="d-val">'+esc(r.email)+'</div></div><div class="d-row"><div class="d-label">License Key</div><div class="d-val">'+esc(r.licensekey)+'</div></div><div class="d-row"><div class="d-label">Tipe</div><div class="d-val">'+(r.type==='Resend'?'Kirim Ulang':'Baru')+'</div></div><div class="d-row"><div class="d-label">Status</div><div class="d-val" style="color:'+(ok?'var(--green)':'var(--red)')+'">'+(ok?'Terkirim':'Gagal')+'</div></div><div class="d-row"><div class="d-label">Waktu</div><div class="d-val" style="font-size:.68rem;">'+esc(String(r.timestamp))+'</div></div>'+(r.detail&&r.detail!=='OK'?'<div class="d-row"><div class="d-label">Detail</div><div class="d-val" style="font-size:.68rem;color:var(--red);">'+esc(r.detail)+'</div></div>':'')+'<div class="modal-actions"><button class="btn-act" style="background:rgba(30,200,200,.1);border:1.5px solid rgba(30,200,200,.2);color:var(--teal);" onclick="sResendFromHist(\''+esc(r.email)+'\',\''+esc(r.licensekey)+'\')">Kirim Ulang</button></div>';
+document.getElementById('modal').classList.add('open')}
 
-  btn.disabled = true;
-  btn.classList.add('loading');
+async function sResendFromHist(email,key){const d=await apiPost(SIMS_API,{pin:_simsPin,action:'resend',email:email,licensekey:key});toast(d.message||'OK',d.status!=='ok');closeModal();sRefreshHist()}
 
-  try {
-    const d = await apiPost({
-      pin: _adminPin,
-      action: 'add',
-      email: email,
-      licensekey: key,
-      ccaccess: cc
-    });
-    if (d.status === 'ok') {
-      toast(d.message, false);
-      document.getElementById('fEmail').value = '';
-      document.getElementById('fKey').value = '';
-      document.getElementById('fCC').checked = false;
-      // Refresh list
-      refreshData();
-    } else {
-      toast(d.message || 'Gagal menyimpan', true);
-    }
-  } catch (e) {
-    toast('Gagal terhubung: ' + e.message, true);
-  }
+// ── STORE MODE (uses STORE_API + _storePin) ──
+function gTab(i){document.querySelectorAll('#gTabBar .tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));for(let j=0;j<4;j++){const c=document.getElementById('gT'+j);c&&c.classList.toggle('active',j===i)}if(i===2)gRefreshHist()}
 
-  btn.disabled = false;
-  btn.classList.remove('loading');
-}
+async function gRefresh(){if(!STORE_API||!_storePin)return;try{const d=await apiGet(STORE_API,{action:'games',pin:_storePin});if(d.status==='ok'){_gGames=d.data||[];gRenderGames();toast('Katalog dimuat',0)}}catch(e){toast(e.message,1)}}
+async function gRefreshHist(){if(!STORE_API||!_storePin)return;try{const d=await apiGet(STORE_API,{action:'history',pin:_storePin});if(d.status==='ok'){_gHist=d.data||[];gRenderHist()}}catch(e){}}
 
-// ── Refresh ──
-async function refreshData() {
-  try {
-    const d = await apiGet({ action: 'list', pin: _adminPin });
-    if (d.status === 'ok') {
-      _allData = d.data || [];
-      renderList();
-    } else {
-      toast(d.message || 'Gagal memuat data', true);
-    }
-  } catch (e) {
-    toast('Gagal terhubung', true);
-  }
-}
+function gRenderGames(){const q=(document.getElementById('gSearch').value||'').toLowerCase();const f=_gGames.filter(g=>!q||g.name.toLowerCase().includes(q));document.getElementById('gStats').textContent=f.length+' dari '+_gGames.length+' game';const w=document.getElementById('gGameList');if(!f.length){w.innerHTML='<div class="empty">Tidak ditemukan</div>';return}w.innerHTML=f.map(g=>'<div class="g-card" onclick="gShowGame(\''+esc(g.id)+'\')"><div class="g-name">'+esc(g.name)+'</div><div class="g-meta"><span class="badge badge-teal">'+esc(g.size)+'</span><span class="badge badge-purple">'+esc(g.genre)+'</span></div></div>').join('')}
 
-// ── List ──
-function renderList() {
-  const q = (document.getElementById('searchInput').value || '').toLowerCase();
-  _filtered = _allData.filter(r =>
-    !q || r.licensekey.toLowerCase().includes(q) || (r.pcuser || '').toLowerCase().includes(q)
-  ).slice().reverse();
+function gShowGame(id){const g=_gGames.find(x=>x.id===id);if(!g)return;const inCart=_gCart.some(c=>c.id===id);document.getElementById('mTitle').textContent=g.name;document.getElementById('mBody').innerHTML='<div class="d-row"><div class="d-label">Game ID</div><div class="d-val" style="font-size:.68rem;">'+esc(g.id)+'</div></div><div class="d-row"><div class="d-label">Size</div><div class="d-val">'+esc(g.size)+'</div></div><div class="d-row"><div class="d-label">Genre</div><div class="d-val">'+esc(g.genre)+'</div></div>'+(g.note?'<div class="d-row"><div class="d-label">Note</div><div class="d-val" style="font-size:.68rem;">'+esc(g.note)+'</div></div>':'')+'<div class="d-row"><div class="d-label">Mirrors</div><div class="d-val">'+((g.folder_ids||[]).length)+' server</div></div><div style="margin-top:16px;">'+(inCart?'<button class="btn btn-outline" disabled>Sudah di Keranjang</button>':'<button class="btn btn-purple" onclick="gAddCart(\''+esc(g.id)+'\')">Tambah ke Keranjang</button>')+'</div>';document.getElementById('modal').classList.add('open')}
 
-  document.getElementById('listStats').textContent =
-    _filtered.length + ' dari ' + _allData.length + ' data';
+function gAddCart(id){const g=_gGames.find(x=>x.id===id);if(!g||_gCart.some(c=>c.id===id))return;_gCart.push({id:g.id,name:g.name,size:g.size});gUpdBadge();gRenderCart();closeModal();toast(g.name+' ditambahkan',0)}
+function gRmCart(id){_gCart=_gCart.filter(c=>c.id!==id);gUpdBadge();gRenderCart()}
+function gUpdBadge(){const b=document.getElementById('gCartBadge');if(_gCart.length>0){b.style.display='flex';b.textContent=_gCart.length}else b.style.display='none';document.getElementById('gBtnSend').disabled=_gCart.length===0}
+function gRenderCart(){const w=document.getElementById('gCartList');if(!_gCart.length){w.innerHTML='<div class="empty">Keranjang kosong</div>';return}w.innerHTML=_gCart.map(c=>'<div class="cart-item"><div class="g-name">'+esc(c.name)+'</div><span class="badge badge-teal">'+esc(c.size)+'</span><button class="cart-rm" onclick="gRmCart(\''+esc(c.id)+'\')">x</button></div>').join('')}
 
-  const wrap = document.getElementById('listScroll');
-  if (!_filtered.length) {
-    wrap.innerHTML = '<div class="list-empty">Tidak ada data' + (q ? ' untuk "' + q + '"' : '') + '</div>';
-    return;
-  }
+async function gDoSend(){const email=document.getElementById('gSendEmail').value.trim();if(!email||!email.includes('@')){toast('Email tidak valid',1);return}if(!_gCart.length){toast('Keranjang kosong',1);return}const btn=document.getElementById('gBtnSend');btn.disabled=true;btn.innerHTML='<div class="spin"></div>';document.getElementById('gSendReport').style.display='none';try{const d=await apiPost(STORE_API,{pin:_storePin,action:'send',email,cart:_gCart});let h='<div style="background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;"><div style="font-size:.78rem;font-weight:900;margin-bottom:6px;">'+(d.message||'Selesai')+'</div>';if(d.report)d.report.forEach(r=>{h+='<div style="font-size:.68rem;margin-bottom:3px;color:'+(r.status==='ok'?'var(--green)':'var(--red)')+';">'+(r.status==='ok'?'OK':'GAGAL')+' - '+esc(r.game)+'</div>'});if(d.email_sent)h+='<div style="font-size:.65rem;color:var(--teal);margin-top:6px;">Email terkirim</div>';h+='</div>';document.getElementById('gSendReport').innerHTML=h;document.getElementById('gSendReport').style.display='block';_gCart=[];gUpdBadge();gRenderCart();document.getElementById('gSendEmail').value='';toast(d.message||'OK',0)}catch(e){toast(e.message,1)}btn.disabled=false;btn.textContent='KIRIM & SHARE';gUpdBadge()}
 
-  let html = '';
-  _filtered.forEach((r, i) => {
-    const hasCC = r.ccaccess === 'Y';
-    const isActive = r.uuid || r.status;
-    html += `<div class="list-item" onclick="openDetail(${i})">
-      <div class="li-icon${hasCC ? ' vip' : ''}">${hasCC ? 'VIP' : 'STD'}</div>
-      <div class="li-body">
-        <div class="li-key">${esc(r.licensekey || '—')}</div>
-        <div class="li-meta">
-          ${r.pcuser ? '<span>' + esc(r.pcuser) + '</span>' : ''}
-          ${r.lastlogin ? '<span>' + esc(String(r.lastlogin).substring(0, 10)) + '</span>' : ''}
-          ${hasCC ? '<span class="li-badge cc">CC ✓</span>' : ''}
-          ${isActive ? '<span class="li-badge active">AKTIF</span>' : '<span class="li-badge inactive">BELUM LOGIN</span>'}
-        </div>
-      </div>
-      <div class="li-arrow">›</div>
-    </div>`;
-  });
-  wrap.innerHTML = html;
-}
+function gRenderHist(){const q=(document.getElementById('gHistSearch').value||'').toLowerCase();const f=_gHist.filter(h=>!q||(h.email||'').toLowerCase().includes(q)||(h.game_id||'').toLowerCase().includes(q));document.getElementById('gHistStats').textContent=f.length+' dari '+_gHist.length;const w=document.getElementById('gHistList');if(!f.length){w.innerHTML='<div class="empty">Kosong</div>';return}w.innerHTML=f.map(h=>'<div class="li" style="cursor:default;"><div class="li-body"><div class="li-key">'+esc(h.email)+'</div><div class="li-meta"><span>'+esc(h.game_id)+'</span><span class="badge '+(h.status==='ACTIVE'?'badge-green':'badge-red')+'">'+esc(h.status)+'</span><span>'+esc(String(h.date).substring(0,19))+'</span></div></div></div>').join('')}
 
-function filterList() { renderList(); }
+async function gRevokeScan(){const email=document.getElementById('gRevokeEmail').value.trim();if(!email){toast('Masukkan email',1);return}document.getElementById('gRevokeRes').innerHTML='<div class="spin" style="margin:20px auto;"></div>';try{const d=await apiPost(STORE_API,{pin:_storePin,action:'revoke_scan',email});if(d.status==='ok'){_gRvData=d.data||[];if(!_gRvData.length){document.getElementById('gRevokeRes').innerHTML='<div class="empty">Tidak ada akses</div>';return}let h='<div style="font-size:.72rem;font-weight:800;margin-bottom:10px;">'+_gRvData.length+' game:</div>';_gRvData.forEach((r,i)=>{h+='<div class="cart-item"><div class="g-name">'+esc(r.name||r.game_id)+'</div><button class="cart-rm" style="font-size:.7rem;font-weight:800;" onclick="gRevokeOne('+i+')">Cabut</button></div>'});h+='<button class="btn btn-red" onclick="gRevokeAll()" style="margin-top:10px;">CABUT SEMUA</button>';document.getElementById('gRevokeRes').innerHTML=h}else toast(d.message,1)}catch(e){toast(e.message,1)}}
 
-// ── Detail ──
-function openDetail(idx) {
-  const r = _filtered[idx];
-  if (!r) return;
-
-  document.getElementById('modalTitle').textContent = 'Detail — ' + (r.licensekey || '?');
-
-  let html = `
-    <div class="detail-row"><div class="detail-label">License Key</div><div class="detail-val">${esc(r.licensekey)}</div></div>
-    <div class="detail-row"><div class="detail-label">UUID</div><div class="detail-val" style="font-size:.7rem;">${esc(r.uuid || '—')}</div></div>
-    <div class="detail-row"><div class="detail-label">Status</div><div class="detail-val">${esc(r.status || '—')}</div></div>
-    <div class="detail-row"><div class="detail-label">Last Login</div><div class="detail-val">${esc(String(r.lastlogin || '—'))}</div></div>
-    <div class="detail-row"><div class="detail-label">PC User</div><div class="detail-val">${esc(r.pcuser || '—')}</div></div>
-    <div class="detail-row"><div class="detail-label">CC Access</div><div class="detail-val">${r.ccaccess === 'Y' ? '<span style="color:var(--green)">✅ VIP</span>' : '<span style="color:var(--sub)">—</span>'}</div></div>
-
-    <div style="margin-top:20px;">
-      <div class="form-label">EDIT</div>
-      <div class="edit-field">
-        <label>License Key</label>
-        <input id="editKey" value="${esc(r.licensekey)}">
-      </div>
-      <div class="toggle-row" style="margin-bottom:14px;">
-        <div class="toggle-info"><div class="toggle-title">CC Access</div></div>
-        <label class="toggle-sw">
-          <input type="checkbox" id="editCC" ${r.ccaccess === 'Y' ? 'checked' : ''}>
-          <div class="toggle-track"></div>
-          <div class="toggle-knob"></div>
-        </label>
-      </div>
-    </div>
-
-    <div style="margin-top:6px;">
-      <div class="form-label">KIRIM ULANG EMAIL</div>
-      <div class="resend-row">
-        <input class="form-input" id="resendEmail" placeholder="email@pembeli.com" style="font-size:.8rem;padding:10px 12px;">
-        <button class="btn-action btn-resend" onclick="resendEmail('${esc(r.licensekey)}')" style="flex:0;padding:10px 16px;white-space:nowrap;">📧 Kirim</button>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-action btn-edit" onclick="saveEdit(${r.row})">💾 Simpan</button>
-      <button class="btn-action" onclick="clearUser(${r.row},'${esc(r.licensekey)}')" style="background:rgba(255,184,0,.1);border:1.5px solid rgba(255,184,0,.22);color:var(--gold);">🔄 Clear</button>
-      <button class="btn-action btn-delete" onclick="deleteEntry(${r.row},'${esc(r.licensekey)}')">🗑 Hapus</button>
-    </div>
-  `;
-
-  document.getElementById('modalBody').innerHTML = html;
-  document.getElementById('detailModal').classList.add('open');
-}
-
-function closeDetail() {
-  document.getElementById('detailModal').classList.remove('open');
-}
-
-async function saveEdit(row) {
-  const key = document.getElementById('editKey').value.trim();
-  const cc = document.getElementById('editCC').checked;
-  if (!key) { toast('License key tidak boleh kosong', true); return; }
-
-  try {
-    const d = await apiPost({ pin: _adminPin, action: 'edit', row: row, licensekey: key, ccaccess: cc ? 'Y' : '' });
-    toast(d.message || 'Berhasil', d.status !== 'ok');
-    closeDetail();
-    refreshData();
-  } catch (e) { toast('Gagal: ' + e.message, true); }
-}
-
-async function deleteEntry(row, key) {
-  if (!confirm('Yakin hapus data "' + key + '"?')) return;
-
-  try {
-    const d = await apiPost({ pin: _adminPin, action: 'delete', row: row });
-    toast(d.message || 'Berhasil dihapus', d.status !== 'ok');
-    closeDetail();
-    refreshData();
-  } catch (e) { toast('Gagal: ' + e.message, true); }
-}
-
-async function clearUser(row, key) {
-  if (!confirm('Clear user "' + key + '"?\n\nUUID, status, last login & PC user akan dihapus. User bisa login ulang di device baru.')) return;
-
-  try {
-    const d = await apiPost({ pin: _adminPin, action: 'clear', row: row });
-    toast(d.message || 'User berhasil di-clear', d.status !== 'ok');
-    closeDetail();
-    refreshData();
-  } catch (e) { toast('Gagal: ' + e.message, true); }
-}
-
-async function resendEmail(licensekey) {
-  const email = document.getElementById('resendEmail').value.trim();
-  if (!email || !email.includes('@')) { toast('Masukkan email yang valid', true); return; }
-
-  try {
-    const d = await apiPost({ pin: _adminPin, action: 'resend', email: email, licensekey: licensekey });
-    toast(d.message || 'Email terkirim', d.status !== 'ok');
-  } catch (e) { toast('Gagal: ' + e.message, true); }
-}
-
-// ── History ──
-let _historyData = [];
-
-async function refreshHistory() {
-  try {
-    const d = await apiGet({ action: 'history', pin: _adminPin });
-    if (d.status === 'ok') {
-      _historyData = d.data || [];
-      renderHistory();
-    } else {
-      toast(d.message || 'Gagal memuat riwayat', true);
-    }
-  } catch (e) {
-    toast('Gagal: ' + e.message, true);
-  }
-}
-
-function renderHistory() {
-  const q = (document.getElementById('histSearch').value || '').toLowerCase();
-  const filtered = _historyData.filter(r =>
-    !q || (r.email || '').toLowerCase().includes(q) || (r.licensekey || '').toLowerCase().includes(q)
-  );
-
-  document.getElementById('histStats').textContent = filtered.length + ' dari ' + _historyData.length + ' email';
-
-  const wrap = document.getElementById('histScroll');
-  if (!filtered.length) {
-    wrap.innerHTML = '<div class="list-empty">Belum ada riwayat email' + (q ? ' untuk "' + q + '"' : '') + '</div>';
-    return;
-  }
-
-  // Store for detail click
-  window._histFiltered = filtered;
-
-  let html = '';
-  filtered.forEach((r, i) => {
-    const ok = r.status === 'Sent';
-    const isResend = r.type === 'Resend';
-    html += `<div class="list-item" onclick="openHistDetail(${i})">
-      <div class="li-icon" style="background:${ok ? 'rgba(0,230,118,.1)' : 'rgba(255,69,96,.1)'};color:${ok ? 'var(--green)' : 'var(--red)'};border-color:${ok ? 'rgba(0,230,118,.2)' : 'rgba(255,69,96,.2)'};">${ok ? '✓' : '✕'}</div>
-      <div class="li-body">
-        <div class="li-key">${esc(r.email || '—')}</div>
-        <div class="li-meta">
-          <span>${esc(r.licensekey)}</span>
-          <span class="li-badge ${ok ? 'active' : 'inactive'}">${ok ? 'SENT' : 'FAILED'}</span>
-          ${isResend ? '<span class="li-badge cc">RESEND</span>' : ''}
-        </div>
-        <div style="font-size:.58rem;color:var(--sub);margin-top:2px;">${esc(String(r.timestamp))}</div>
-      </div>
-      <div class="li-arrow">›</div>
-    </div>`;
-  });
-  wrap.innerHTML = html;
-}
-
-function openHistDetail(idx) {
-  const r = window._histFiltered[idx];
-  if (!r) return;
-  const ok = r.status === 'Sent';
-
-  document.getElementById('modalTitle').textContent = 'Riwayat Email';
-  document.getElementById('modalBody').innerHTML = `
-    <div class="detail-row"><div class="detail-label">Email Tujuan</div><div class="detail-val">${esc(r.email)}</div></div>
-    <div class="detail-row"><div class="detail-label">License Key</div><div class="detail-val">${esc(r.licensekey)}</div></div>
-    <div class="detail-row"><div class="detail-label">Tipe</div><div class="detail-val">${r.type === 'Resend' ? 'Kirim Ulang' : 'Baru'}</div></div>
-    <div class="detail-row"><div class="detail-label">Status</div><div class="detail-val" style="color:${ok ? 'var(--green)' : 'var(--red)'}">${ok ? 'Terkirim' : 'Gagal'}</div></div>
-    <div class="detail-row"><div class="detail-label">Waktu</div><div class="detail-val">${esc(String(r.timestamp))}</div></div>
-    ${r.detail && r.detail !== 'OK' ? '<div class="detail-row"><div class="detail-label">Detail</div><div class="detail-val" style="font-size:.7rem;color:var(--red);">' + esc(r.detail) + '</div></div>' : ''}
-    <div class="modal-actions" style="margin-top:20px;">
-      <button class="btn-action btn-resend" onclick="resendFromHist('${esc(r.email)}','${esc(r.licensekey)}')">Kirim Ulang ke ${esc(r.email)}</button>
-    </div>
-  `;
-  document.getElementById('detailModal').classList.add('open');
-}
-
-async function resendFromHist(email, licensekey) {
-  const d = await apiPost({ pin: _adminPin, action: 'resend', email: email, licensekey: licensekey });
-  toast(d.message || 'Email terkirim', d.status !== 'ok');
-  closeDetail();
-  refreshHistory();
-}
-
-function filterHistory() { renderHistory(); }
-
-// ── Utils ──
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-function toast(msg, isErr) {
-  const t = document.getElementById('toast');
-  clearTimeout(_toastTimer);
-  t.textContent = msg;
-  t.className = 'toast show ' + (isErr ? 'err' : 'ok');
-  _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
-}
+async function gRevokeOne(i){const r=_gRvData[i];if(!r||!confirm('Cabut '+r.name+'?'))return;const d=await apiPost(STORE_API,{pin:_storePin,action:'revoke_exec',email:document.getElementById('gRevokeEmail').value.trim(),game_ids:[r.game_id]});toast(d.message||'OK',0);gRevokeScan()}
+async function gRevokeAll(){if(!confirm('Cabut SEMUA?'))return;const d=await apiPost(STORE_API,{pin:_storePin,action:'revoke_exec',email:document.getElementById('gRevokeEmail').value.trim(),game_ids:_gRvData.map(r=>r.game_id)});toast(d.message||'OK',0);gRevokeScan()}
 </script>
 </body>
 </html>
