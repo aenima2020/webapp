@@ -357,11 +357,11 @@ async function sSubmit(){
 
 function sRenderList(){
   const q=(document.getElementById('sSearch').value||'').toLowerCase();
-  _sFiltered=_sData.filter(r=>!q||r.licensekey.toLowerCase().includes(q)||(r.pcuser||'').toLowerCase().includes(q)).slice().reverse();
+  _sFiltered=_sData.filter(r=>{if(!q)return true;const k=String(r.licensekey||'').toLowerCase();const p=String(r.pcuser||'').toLowerCase();return k.includes(q)||p.includes(q)}).slice().reverse();
   document.getElementById('sStats').textContent=_sFiltered.length+' dari '+_sData.length;
   const w=document.getElementById('sList');if(!_sFiltered.length){w.innerHTML='<div class="empty">Tidak ada data</div>';return}
   w.innerHTML=_sFiltered.map((r,i)=>{const cc=r.ccaccess==='Y',act=r.uuid||r.status;
-  return'<div class="li" onclick="sDetail('+i+')" style="cursor:pointer;"><div class="li-icon" style="background:'+(cc?'rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.25)':'rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2)')+';">'+(cc?'VIP':'STD')+'</div><div class="li-body"><div class="li-key">'+esc(r.licensekey||'-')+'</div><div class="li-meta">'+(r.pcuser?'<span>'+esc(r.pcuser)+'</span>':'')+(cc?'<span class="badge badge-purple">CC</span>':'')+(act?'<span class="badge badge-green">AKTIF</span>':'<span class="badge badge-red">BELUM</span>')+'</div></div><div class="li-arrow">&rsaquo;</div></div>'}).join('')}
+  return'<div class="li" onclick="sDetail('+i+')" style="cursor:pointer;"><div class="li-icon" style="background:'+(cc?'rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.25)':'rgba(30,200,200,.1);color:var(--teal);border:1px solid rgba(30,200,200,.2)')+';">'+(cc?'VIP':'STD')+'</div><div class="li-body"><div class="li-key">'+esc(String(r.licensekey||'-'))+'</div><div class="li-meta">'+(r.pcuser?'<span>'+esc(r.pcuser)+'</span>':'')+(cc?'<span class="badge badge-purple">CC</span>':'')+(act?'<span class="badge badge-green">AKTIF</span>':'<span class="badge badge-red">BELUM</span>')+'</div></div><div class="li-arrow">&rsaquo;</div></div>'}).join('')}
 
 function sDetail(i){const r=_sFiltered[i];if(!r)return;
   document.getElementById('mTitle').textContent=r.licensekey||'Detail';
@@ -374,7 +374,7 @@ async function sDel(row,key){if(!confirm('Hapus '+key+'?'))return;const d=await 
 async function sResend(key){const e=document.getElementById('seResend').value.trim();if(!e||!e.includes('@')){toast('Email tidak valid',1);return}const d=await apiPost(SIMS_API,{pin:_simsPin,action:'resend',email:e,licensekey:key});toast(d.message||'OK',d.status!=='ok')}
 
 function sRenderHist(){const q=(document.getElementById('sHistSearch').value||'').toLowerCase();
-const f=_sHist.filter(r=>!q||(r.email||'').toLowerCase().includes(q)||(r.licensekey||'').toLowerCase().includes(q));
+const f=_sHist.filter(r=>{if(!q)return true;const e=String(r.email||'').toLowerCase();const k=String(r.licensekey||'').toLowerCase();return e.includes(q)||k.includes(q)});
 window._sHistFiltered=f;
 document.getElementById('sHistStats').textContent=f.length+' dari '+_sHist.length;const w=document.getElementById('sHistList');
 if(!f.length){w.innerHTML='<div class="empty">Kosong</div>';return}
